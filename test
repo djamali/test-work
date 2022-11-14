@@ -1,0 +1,39 @@
+1.///////////////////////////////////////////
+AddEventHandler("iblock", "OnBeforeIBlockElementUpdate", Array("MyClass", "OnBeforeIBlockElementUpdateHandler"));
+
+class MyClass
+{
+    // создаем обработчик события "OnBeforeIBlockElementUpdate"
+    function OnBeforeIBlockElementUpdateHandler(&$arFields)
+    {
+       $arFilter = array('IBLOCK_ID' => $IBLOCK_ID,'>TIMESTAMP_X' => 'YYYY.MM.DD HH:MM:SS');
+	$arSort = array ('TIMESTAMP_X' => 'DESC');
+	$items = CIBlockElement::GetList($arSort,$arFilter);
+	while ($obItem = $items->GetNextElement()):
+   		$arItem = $obItem->GetFields();
+		//здесь проверяем дату и бросаем исключение
+	endwhile;
+    }
+}
+
+2.//////////////////////////////////////////////
+AddEventHandler("iblock", "OnBeforeIBlockElementDelete", Array("MyClass", "OnBeforeIBlockElementDeleteHandler"));
+
+class MyClass
+{
+    
+    function OnBeforeIBlockElementDeleteHandler($ID)
+    {
+        if(//здесь проверяем количество показов SHOW_COUNTER))
+        {
+	    //Отправляем сообщение через CEvent::SendImmediate
+
+            global $APPLICATION;
+            $APPLICATION->throwException("«Нельзя удалить данный товар, так как он очень популярный на сайте»");
+            return false;
+        }
+    }
+}
+
+3.////////////////////////////////////////////////
+в цикле делать запросы не гуд, метрика Маккейба)
